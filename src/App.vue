@@ -44,14 +44,14 @@ provide(injectSumSeconds, {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  padding: 10px;
+  padding: 20px 0;
   box-sizing: border-box;
   align-items: center;
+  row-gap: 20px;
 }
 .menu {
   flex: 1;
-  height: 100%;
-  width: 100%;
+  width: 90%;
 }
 
 </style>

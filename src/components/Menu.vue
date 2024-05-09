@@ -1,16 +1,48 @@
 <template>
     <div class="menu">
         <div class="button minus" @click="minus"></div>
-        <p class="time">{{ time }}</p>
+        <div class="time" @click="inputShow">{{ time }}
+            <input type="text" maxlength="8" v-if="inputFlag" v-model="inputTime" ref="inputElement" @blur="inputHide" @keyup.enter="inputHide">
+        </div>
         <div class="button add" @click="add"></div>
         <div class="button start" @click="startAndPause">{{ buttonStartLabel }}</div>
         <div class="button stop" @click="stop">{{ buttonStopLabel }}</div>
+        <audio class="alarm" src=""></audio>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, inject, watch } from "vue";
+import { ref, computed, inject, watch, nextTick } from "vue";
 import { injectSumSeconds, CountDownFlag } from '../types'
+
+const inputFlag = ref(false)
+const inputTime = ref("00:00:00")
+const inputElement = ref<HTMLInputElement | null>(null)
+
+const inputShow = () => {
+    inputTime.value = "00:00:00"
+    inputFlag.value = true
+    nextTick(() => {
+        inputElement.value?.focus()
+        inputElement.value?.select()
+    })
+}
+
+const inputHide = () => {
+    inputFlag.value = false
+    const time = parseTime(inputTime.value)
+    if (time > 0) {
+        sumSeconds.value = time
+    }
+}
+//TODO添加错误处理
+const parseTime = (time: string) => {
+    const timeArr = time.split(":")
+    const hour = parseInt(timeArr[0])
+    const minute = parseInt(timeArr[1])
+    const second = parseInt(timeArr[2])
+    return hour * 3600 + minute * 60 + second
+}
 
 const { getCountDownFlag, setCountDownFlag, setSumSeconds, getSumSeconds } = inject(injectSumSeconds)!
 const sumSeconds = ref(0)
@@ -56,6 +88,9 @@ const minus = () => {
 
 let temporarySumSeconds = 0
 const startAndPause = () => {
+    if (sumSeconds.value === 0) {
+        return
+    }
     if (getCountDownFlag() === CountDownFlag.Stop) {
         setSumSeconds(sumSeconds.value * 1000)
         buttonStartLabel.value = "暂停"
@@ -93,13 +128,21 @@ watch(getCountDownFlag, (newValue) => {
 .menu {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    margin: 0 10px;
+    justify-content: space-between;
+}
+input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    outline: none;
+    border: none;
 }
 .minus,.add {
     width: 40px;
     height: 40px;
-    background-size: contain;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .start,.stop {
     width: 80px;
@@ -123,5 +166,14 @@ watch(getCountDownFlag, (newValue) => {
 }
 .time {
     font-size: 20px;
+    position: relative;
+}
+input, .time {
+    font-size: 20px;
+    line-height: 40px;
+    height: 40px;
+    width: 90px;
+    padding: 0 5px;
+    box-sizing: border-box;
 }
 </style>
