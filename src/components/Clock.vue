@@ -127,7 +127,7 @@ function animation(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = 6
     ctx.beginPath()
     ctx.moveTo(-20, 0)
-    ctx.lineTo(100, 0)
+    ctx.lineTo(105, 0)
     ctx.stroke()
     ctx.restore()
 

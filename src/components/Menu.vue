@@ -2,30 +2,36 @@
     <div class="menu">
         <div class="button minus" @click="minus"></div>
         <div class="time" @click="inputShow">{{ time }}
-            <input type="text" maxlength="8" v-if="inputFlag" v-model="inputTime" ref="inputElement" @blur="inputHide" @keyup.enter="inputHide">
+            <input type="text" maxlength="8" v-if="inputFlag" v-model="inputTime" ref="inputElement" @blur="inputHide"
+                @keyup.enter="inputFlag = false">
         </div>
         <div class="button add" @click="add"></div>
         <div class="button start" @click="startAndPause">{{ buttonStartLabel }}</div>
-        <div class="button stop" @click="stop">{{ buttonStopLabel }}</div>
-        <audio class="alarm" src=""></audio>
+        <div class="button stop" @click="reset">复位</div>
+        <audio :src="bleep" ref="audioElement"></audio>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, inject, watch, nextTick } from "vue";
 import { injectSumSeconds, CountDownFlag } from '../types'
+import bleep from '../assets/bleep.wav'
+import { message } from "@tauri-apps/api/dialog";
 
 const inputFlag = ref(false)
 const inputTime = ref("00:00:00")
 const inputElement = ref<HTMLInputElement | null>(null)
+const audioElement = ref<HTMLAudioElement | null>(null)
 
 const inputShow = () => {
-    inputTime.value = "00:00:00"
-    inputFlag.value = true
-    nextTick(() => {
-        inputElement.value?.focus()
-        inputElement.value?.select()
-    })
+    if (getCountDownFlag() === CountDownFlag.Stop) {
+        inputTime.value = "00:00:00"
+        inputFlag.value = true
+        nextTick(() => {
+            inputElement.value?.focus()
+            inputElement.value?.select()
+        })
+    }
 }
 
 const inputHide = () => {
@@ -35,13 +41,18 @@ const inputHide = () => {
         sumSeconds.value = time
     }
 }
-//TODO添加错误处理
+
 const parseTime = (time: string) => {
     const timeArr = time.split(":")
     const hour = parseInt(timeArr[0])
     const minute = parseInt(timeArr[1])
     const second = parseInt(timeArr[2])
-    return hour * 3600 + minute * 60 + second
+    if (hour >= 0 && minute >= 0 && second >= 0) {
+        return hour * 3600 + minute * 60 + second
+    } else {
+        message("请输入有效的时间格式！如：12:13:14", { title: "错误！", type: "error" })
+        return 0
+    }
 }
 
 const { getCountDownFlag, setCountDownFlag, setSumSeconds, getSumSeconds } = inject(injectSumSeconds)!
@@ -56,7 +67,6 @@ const time = computed(() => {
     return `${hourStr}:${minuteStr}:${secondStr}`
 })
 const buttonStartLabel = ref("开始")
-const buttonStopLabel = ref("停止")
 
 const add = () => {
     if (sumSeconds.value < 60) {
@@ -70,7 +80,6 @@ const add = () => {
     } else {
         sumSeconds.value = 43200
     }
-    
 }
 const minus = () => {
     if (sumSeconds.value <= 0) {
@@ -110,18 +119,28 @@ const startAndPause = () => {
     }
 }
 
-const stop = () => {
-    setCountDownFlag(CountDownFlag.Stop)
+const reset = () => {
+    if (getCountDownFlag() === CountDownFlag.Stop) {
+        sumSeconds.value = 0
+    } else {
+        setCountDownFlag(CountDownFlag.Stop)
+    }
 }
 
 watch(getCountDownFlag, (newValue) => {
     if (newValue === CountDownFlag.Stop) {
+        audioElement.value?.play()
         sumSeconds.value = 0
         buttonStartLabel.value = "开始"
         temporarySumSeconds = 0
     }
 })
 
+watch(getSumSeconds, (newValue) => {
+    if (newValue >= 0) {
+        sumSeconds.value = Math.ceil(newValue / 1000)
+    }
+})
 </script>
 
 <style scoped>
@@ -153,10 +172,10 @@ input {
 }
 .button:hover,.time:hover {
     cursor: pointer;
-    background-color: rgb(240, 240, 240);
+    background-color: var(--clock-board-color);
 }
 .button:active {
-    background-color: rgb(200, 200, 200);
+    background-color: var(--mouse-click-color);
 }
 .minus {
     background-image: url("../assets/left.svg");
@@ -167,6 +186,7 @@ input {
 .time {
     font-size: 20px;
     position: relative;
+    user-select: none;
 }
 input, .time {
     font-size: 20px;

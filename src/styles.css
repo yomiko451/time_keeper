@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "宋体";
+  font-family: var(--menu-font-family);
 }
 
 html {
@@ -11,4 +11,6 @@ html {
   --clock-hand-color: rgb(52, 52, 53);
   --clock-second-hand-color: rgb(203, 1, 1);
   --clock-progress-color: rgb(209, 215, 220);
+  --mouse-click-color: rgb(200, 200, 200);
+  --menu-font-family: "宋体";
 }
