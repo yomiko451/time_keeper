@@ -14,6 +14,7 @@ import { injectSumSeconds, CountDownFlag, Theme } from './types'
 import { invoke } from '@tauri-apps/api';
 
 init()
+document.oncontextmenu = () => { return false }
 async function init() {
   await invoke('init')
   const theme: Theme = await invoke('get_theme')
