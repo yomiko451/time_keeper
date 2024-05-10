@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "time_keeper",
-    "version": "0.1.3"
+    "version": "0.1.4"
   },
   "tauri": {
     "allowlist": {
@@ -40,7 +40,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "time_keeper",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

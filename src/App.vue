@@ -10,7 +10,21 @@
 import { ref, provide } from 'vue';
 import Clock from './components/Clock.vue';
 import ClockMenu from './components/Menu.vue';
-import { injectSumSeconds, CountDownFlag } from './types'
+import { injectSumSeconds, CountDownFlag, Theme } from './types'
+import { invoke } from '@tauri-apps/api';
+
+init()
+async function init() {
+  await invoke('init')
+  const theme: Theme = await invoke('get_theme')
+  const globalStyle = document.documentElement.style
+  globalStyle.setProperty('--background-color', theme.background_color)
+  globalStyle.setProperty('--clock-board-color', theme.clock_board_color)
+  globalStyle.setProperty('--mouse-click-color', theme.mouse_click_color)
+  globalStyle.setProperty('--menu-text-color', theme.menu_text_color)
+  globalStyle.setProperty('--menu-font-family', theme.menu_font_family)
+}
+
 
 const sumSeconds = ref(0)
 const countDownFlag = ref(CountDownFlag.Stop)
@@ -48,6 +62,7 @@ provide(injectSumSeconds, {
   box-sizing: border-box;
   align-items: center;
   row-gap: 20px;
+  background-color: var(--background-color);
 }
 .menu {
   flex: 1;

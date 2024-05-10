@@ -1,11 +1,11 @@
 <template>
     <div class="menu">
-        <div class="button minus" @click="minus"></div>
+        <div class="button minus" @click="minus">减</div>
         <div class="time" @click="inputShow">{{ time }}
             <input type="text" maxlength="8" v-if="inputFlag" v-model="inputTime" ref="inputElement" @blur="inputHide"
                 @keyup.enter="inputFlag = false">
         </div>
-        <div class="button add" @click="add"></div>
+        <div class="button add" @click="add">加</div>
         <div class="button start" @click="startAndPause">{{ buttonStartLabel }}</div>
         <div class="button stop" @click="reset">复位</div>
         <audio :src="bleep" ref="audioElement"></audio>
@@ -129,7 +129,9 @@ const reset = () => {
 
 watch(getCountDownFlag, (newValue) => {
     if (newValue === CountDownFlag.Stop) {
-        audioElement.value?.play()
+        if (getSumSeconds() <= 0) {
+            audioElement.value?.play()
+        }
         sumSeconds.value = 0
         buttonStartLabel.value = "开始"
         temporarySumSeconds = 0
@@ -155,20 +157,20 @@ input {
     left: 0;
     outline: none;
     border: none;
+    background-color: var(--background-color);
 }
 .minus,.add {
     width: 40px;
-    height: 40px;
-    background-size: 60%;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 .start,.stop {
     width: 80px;
+}
+.minus,.add,.start,.stop {
     height: 40px;
     line-height: 40px;
     font-size: 20px;
     text-align: center;
+    user-select: none;
 }
 .button:hover,.time:hover {
     cursor: pointer;
@@ -176,12 +178,6 @@ input {
 }
 .button:active {
     background-color: var(--mouse-click-color);
-}
-.minus {
-    background-image: url("../assets/left.svg");
-}
-.add {
-    background-image: url("../assets/right.svg");
 }
 .time {
     font-size: 20px;

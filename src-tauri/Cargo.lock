@@ -2929,8 +2929,9 @@ dependencies = [
 
 [[package]]
 name = "time_keeper"
-version = "0.0.0"
+version = "0.1.4"
 dependencies = [
+ "regex",
  "serde",
  "serde_json",
  "tauri",
