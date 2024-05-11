@@ -6,6 +6,17 @@ use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            tauri::async_runtime::spawn(async move {
+                let mut interval = tokio::time::interval(std::time::Duration::from_millis(500));
+                loop {
+                    interval.tick().await;
+                    window.emit("clock", "").unwrap();
+                }
+            });
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![init, get_theme, show_main_window, play_sound])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

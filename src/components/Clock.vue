@@ -8,6 +8,7 @@
 import { inject, watch, onMounted, ref } from "vue"
 import { injectSumSeconds, CountDownFlag, Theme } from '../types'
 import { invoke } from "@tauri-apps/api";
+import { listen } from "@tauri-apps/api/event";
 
 const rect = ref({height: 320, width: 320})
 
@@ -22,9 +23,9 @@ onMounted(async () => {
     ctx.scale(ratio, ratio)
     const theme: Theme = await invoke('get_theme')
     window.requestAnimationFrame(() => animation(ctx, theme))
-    setInterval(() => {
+    listen('clock', () => {
         window.requestAnimationFrame(() => animation(ctx, theme))
-    }, 250)
+    })
 })
 
 const { getCountDownFlag, setCountDownFlag, getSumSeconds, setSumSeconds } = inject(injectSumSeconds)!
