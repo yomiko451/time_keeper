@@ -8,20 +8,18 @@
         <div class="button add" @click="add">加</div>
         <div class="button start" @click="startAndPause">{{ buttonStartLabel }}</div>
         <div class="button stop" @click="reset">复位</div>
-        <audio :src="bleep" ref="audioElement"></audio>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, inject, watch, nextTick } from "vue";
 import { injectSumSeconds, CountDownFlag } from '../types'
-import bleep from '../assets/bleep.wav'
 import { message } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api";
 
 const inputFlag = ref(false)
 const inputTime = ref("00:00:00")
 const inputElement = ref<HTMLInputElement | null>(null)
-const audioElement = ref<HTMLAudioElement | null>(null)
 
 const inputShow = () => {
     if (getCountDownFlag() === CountDownFlag.Stop) {
@@ -122,7 +120,7 @@ const reset = () => {
 watch(getCountDownFlag, (newValue) => {
     if (newValue === CountDownFlag.Stop) {
         if (getSumSeconds() <= 0) {
-            audioElement.value?.play()
+            invoke("play_sound")
         }
         sumSeconds.value = 0
         buttonStartLabel.value = "开始"
