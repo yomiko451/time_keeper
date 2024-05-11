@@ -24,7 +24,11 @@ onMounted(async () => {
     const theme: Theme = await invoke('get_theme')
     window.requestAnimationFrame(() => animation(ctx, theme))
     listen('clock', () => {
-        window.requestAnimationFrame(() => animation(ctx, theme))
+        if (document.visibilityState === 'visible') {
+            window.requestAnimationFrame(() => animation(ctx, theme))
+        } else {
+            animation(ctx, theme)
+        }
     })
 })
 
