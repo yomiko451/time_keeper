@@ -21,7 +21,8 @@ async function init() {
   const globalStyle = document.documentElement.style
   globalStyle.setProperty('--background-color', theme.background_color)
   globalStyle.setProperty('--clock-board-color', theme.clock_board_color)
-  globalStyle.setProperty('--mouse-click-color', theme.mouse_click_color)
+  globalStyle.setProperty('--button-background-color', theme.button_background_color)
+  globalStyle.setProperty('--button-click-color', theme.button_click_color)
   globalStyle.setProperty('--menu-text-color', theme.menu_text_color)
   globalStyle.setProperty('--menu-font-family', theme.menu_font_family)
 }

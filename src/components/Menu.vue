@@ -69,11 +69,7 @@ const time = computed(() => {
 const buttonStartLabel = ref("开始")
 
 const add = () => {
-    if (sumSeconds.value < 60) {
-        sumSeconds.value += 5
-    } else if (sumSeconds.value < 300) {
-        sumSeconds.value += 30
-    } else if (sumSeconds.value < 3600) {
+    if (sumSeconds.value < 3600) {
         sumSeconds.value += 300
     } else if (sumSeconds.value < 43200) {
         sumSeconds.value += 1800
@@ -84,10 +80,6 @@ const add = () => {
 const minus = () => {
     if (sumSeconds.value <= 0) {
         sumSeconds.value = 0
-    } else if (sumSeconds.value <= 60) {
-        sumSeconds.value -= 5
-    } else if (sumSeconds.value <= 300) {
-        sumSeconds.value -= 30
     } else if (sumSeconds.value <= 3600) {
         sumSeconds.value -= 300
     } else {
@@ -174,10 +166,10 @@ input {
 }
 .button:hover,.time:hover {
     cursor: pointer;
-    background-color: var(--clock-board-color);
+    background-color: var(--button-background-color);
 }
 .button:active {
-    background-color: var(--mouse-click-color);
+    background-color: var(--button-click-color);
 }
 .time {
     font-size: 20px;

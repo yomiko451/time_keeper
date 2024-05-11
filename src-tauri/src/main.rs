@@ -32,7 +32,8 @@ fn get_theme(app_handle: tauri::AppHandle) -> Theme {
             clock_hand_color: "rgb(52, 52, 53)".to_string(),
             clock_second_hand_color: "rgb(203, 1, 1)".to_string(),
             clock_progress_color: "rgb(209, 215, 220)".to_string(),
-            mouse_click_color: "rgb(200, 200, 200)".to_string(),
+            button_background_color: "rgb(237, 237, 237)".to_string(),
+            button_click_color: "rgb(200, 200, 200)".to_string(),
             menu_text_color: "rgb(0, 0, 0)".to_string(),
             menu_font_family: "宋体".to_string()
         }
@@ -48,7 +49,8 @@ struct Theme {
     clock_hand_color: String,
     clock_second_hand_color: String,
     clock_progress_color: String,
-    mouse_click_color: String,
+    button_background_color: String,
+    button_click_color: String,
     menu_text_color: String,
     menu_font_family: String
 }
@@ -75,7 +77,8 @@ impl Theme {
             &self.clock_hand_color,
             &self.clock_second_hand_color,
             &self.clock_progress_color,
-            &self.mouse_click_color,
+            &self.button_background_color,
+            &self.button_click_color,
             &self.menu_text_color,
         ]
         .iter()
