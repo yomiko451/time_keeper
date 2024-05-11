@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, provide } from 'vue';
+import { ref, provide, onMounted } from 'vue';
 import Clock from './components/Clock.vue';
 import ClockMenu from './components/Menu.vue';
 import { injectSumSeconds, CountDownFlag, Theme } from './types'
@@ -27,6 +27,7 @@ async function init() {
   globalStyle.setProperty('--menu-font-family', theme.menu_font_family)
 }
 
+onMounted(()=>invoke('show_main_window'))
 
 const sumSeconds = ref(0)
 const countDownFlag = ref(CountDownFlag.Stop)
